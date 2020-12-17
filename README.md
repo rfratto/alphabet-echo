@@ -16,7 +16,7 @@ Copy and paste the resulting text into Slack.
 Or install from source (Go >=1.15 required):
 
 ```
-GO111MODULE=on go get github.com/rfratto/alphabet-echo@master
+GO111MODULE=on go get github.com/rfratto/alphabet-echo@main
 ```
 
 And then run with:
