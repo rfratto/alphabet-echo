@@ -2,4 +2,4 @@ module github.com/rfratto/alphabet-echo
 
 go 1.15
 
-require golang.org/x/text v0.3.4 // indirect
+require golang.org/x/text v0.3.4
