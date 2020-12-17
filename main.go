@@ -47,7 +47,7 @@ func main() {
 			fmt.Printf(":alphabet-%s-hash:", selectedColor)
 		case c == '!':
 			fmt.Printf(":alphabet-%s-exclamation:", selectedColor)
-		case unicode.IsLetter(c):
+		case unicode.IsLetter(c) && c < unicode.MaxASCII:
 			fmt.Printf(":alphabet-%s-%s:", selectedColor, string(c))
 		case unicode.IsSpace(c):
 			// Print with extra padding so words are more readable in Slack
