@@ -4,12 +4,16 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"regexp"
 	"strings"
 	"unicode"
 
 	"golang.org/x/text/transform"
 	"golang.org/x/text/unicode/norm"
 )
+
+// fragmentRegex can be used to parse out slack emoji from a word
+var fragmentRegex = regexp.MustCompile("(:[a-z_+']+:|.)")
 
 func isMn(r rune) bool {
 	return unicode.Is(unicode.Mn, r)
@@ -37,24 +41,29 @@ func main() {
 	t := transform.Chain(norm.NFD, transform.RemoveFunc(isMn), norm.NFC)
 	normed, _, _ := transform.String(t, strings.Join(fs.Args(), ` `))
 
-	for _, c := range normed {
+	for _, f := range fragmentRegex.FindAllString(normed, -1) {
+		// We need to convert f to a rune slice for detecting single letter unicode
+		// fragments.
+		rr := []rune(f)
+
 		switch {
-		case c == '?':
+		case f == "?":
 			fmt.Printf(":alphabet-%s-question:", selectedColor)
-		case c == '@':
+		case f == "@":
 			fmt.Printf(":alphabet-%s-at:", selectedColor)
-		case c == '#':
+		case f == "#":
 			fmt.Printf(":alphabet-%s-hash:", selectedColor)
-		case c == '!':
+		case f == "!":
 			fmt.Printf(":alphabet-%s-exclamation:", selectedColor)
-		case unicode.IsLetter(c) && c < unicode.MaxASCII:
-			fmt.Printf(":alphabet-%s-%s:", selectedColor, string(c))
-		case unicode.IsSpace(c):
+		case len(rr) == 1 && unicode.IsLetter(rr[0]) && rr[0] < unicode.MaxASCII:
+			fmt.Printf(":alphabet-%s-%s:", selectedColor, f)
+		case len(rr) == 1 && unicode.IsSpace(rr[0]):
 			// Print with extra padding so words are more readable in Slack
 			fmt.Printf("   ")
 		default:
-			// Unsupported characters should just be printed normally
-			fmt.Printf("%s", string(c))
+			// Everything else should be printed normally (this includes emoji as
+			// well as unsuported individual characters)
+			fmt.Printf("%s", string(f))
 		}
 	}
 	fmt.Println()
