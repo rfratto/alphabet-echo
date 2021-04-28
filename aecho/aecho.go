@@ -19,8 +19,13 @@ func isMn(r rune) bool {
 	return unicode.Is(unicode.Mn, r)
 }
 
+// Options control the output of the transformation.
 type Options struct {
+	// UseWhite uses the white alphabet variants.
 	UseWhite bool
+
+	// Emphasize adds clapping emojis in between words.
+	Emphasize bool
 }
 
 // Transform will transform the input string into an Alphabetized version.
@@ -61,7 +66,11 @@ func Transform(input string, opts Options) string {
 			fmt.Fprintf(&w, ":alphabet-%s-%s:", selectedColor, f)
 		case len(rr) == 1 && unicode.IsSpace(rr[0]):
 			// Print with extra padding so words are more readable in Slack
-			fmt.Fprintf(&w, "   ")
+			if opts.Emphasize {
+				fmt.Fprintf(&w, "   :clap:   ")
+			} else {
+				fmt.Fprintf(&w, "   ")
+			}
 		default:
 			// Everything else should be printed normally (this includes emoji as
 			// well as unsuported individual characters)
