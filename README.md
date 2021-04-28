@@ -1,6 +1,6 @@
 <p align="center"><img src="alphabet-echo.png" alt="Alphabet Echo"></p>
 
-A silly tool that echos a message with all the characters replaced with Slack's
+A very serious and important tool that echos a message with all the characters replaced with Slack's
 new alphabet emoji.
 
 ## Running 
