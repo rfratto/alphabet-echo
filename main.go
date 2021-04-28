@@ -47,6 +47,13 @@ func main() {
 		rr := []rune(f)
 
 		switch {
+		case f == ".":
+			if useWhite {
+				fmt.Printf(":white_circle:")
+			} else {
+				// The "yellow" alphabet colors are closer to orange.
+				fmt.Printf(":large_orange_circle:")
+			}
 		case f == "?":
 			fmt.Printf(":alphabet-%s-question:", selectedColor)
 		case f == "@":
