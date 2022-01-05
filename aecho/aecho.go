@@ -13,7 +13,7 @@ import (
 )
 
 // fragmentRegex can be used to parse out slack emoji from a word
-var fragmentRegex = regexp.MustCompile("(:[0-9a-z\\-_+']+:|.)")
+var fragmentRegex = regexp.MustCompile(`(:[0-9a-z\-_+']+:|.|\s)`)
 
 func isMn(r rune) bool {
 	return unicode.Is(unicode.Mn, r)
@@ -40,6 +40,7 @@ func Transform(input string, opts Options) string {
 	// Normalize unicode characters to ASCII
 	t := transform.Chain(norm.NFD, transform.RemoveFunc(isMn), norm.NFC)
 	normed, _, _ := transform.String(t, string(input))
+	normed = strings.TrimSpace(normed)
 
 	for _, f := range fragmentRegex.FindAllString(normed, -1) {
 		// We need to convert f to a rune slice for detecting single letter unicode
@@ -64,7 +65,7 @@ func Transform(input string, opts Options) string {
 			fmt.Fprintf(&w, ":alphabet-%s-exclamation:", selectedColor)
 		case len(rr) == 1 && unicode.IsLetter(rr[0]) && rr[0] < unicode.MaxASCII:
 			fmt.Fprintf(&w, ":alphabet-%s-%s:", selectedColor, strings.ToLower(f))
-		case len(rr) == 1 && unicode.IsSpace(rr[0]):
+		case len(rr) == 1 && unicode.IsSpace(rr[0]) && rr[0] != '\n' && rr[0] != '\r':
 			// Print with extra padding so words are more readable in Slack
 			if opts.Emphasize {
 				fmt.Fprintf(&w, "   :clap:   ")
