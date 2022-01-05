@@ -25,7 +25,7 @@ And then run with:
 alphabet-echo hello world!
 ```
 
-For longer phrases on Mac, use " ".
+For longer phrases use " ".
 
 ```
 alphabet-echo "hello world, i am grot!"
