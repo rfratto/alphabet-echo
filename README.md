@@ -24,3 +24,10 @@ And then run with:
 ```
 alphabet-echo hello world!
 ```
+
+For phrases using special characters use " ".
+
+```
+alphabet-echo "hello world, i am grot!"
+```
+
